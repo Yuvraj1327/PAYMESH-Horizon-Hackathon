@@ -12,7 +12,7 @@ import { LogoMark } from "@/components/common/logo";
 export function Header() {
   return (
     <header className="sticky top-0 z-20 border-b bg-surface/95 backdrop-blur supports-[backdrop-filter]:bg-surface/80">
-      <div className="flex h-16 items-center gap-2 px-4 sm:gap-3 sm:px-6 lg:px-8">
+      <div className="flex h-16 items-center gap-1.5 px-3 sm:gap-3 sm:px-6 lg:px-8">
         <MobileNav />
         <Link href="/dashboard" className="lg:hidden" aria-label="PayMesh home"><LogoMark className="size-7" /></Link>
         <div className="hidden shrink-0 items-center gap-1.5 whitespace-nowrap text-sm lg:flex">

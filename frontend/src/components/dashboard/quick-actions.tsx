@@ -3,7 +3,7 @@ import { ClipboardPlus, Code2, CreditCard, Receipt, ShieldCheck, Store, type Luc
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const ACTIONS: ReadonlyArray<{ label: string; description: string; href: string; icon: LucideIcon }> = [
-  { label: "New request", description: "Describe a service you need", href: "/procurement", icon: ClipboardPlus },
+  { label: "New request", description: "Describe a service you need", href: "/procurement/new", icon: ClipboardPlus },
   { label: "Browse agents", description: "Compare providers", href: "/marketplace", icon: Store },
   { label: "Review payments", description: "Pending authorizations", href: "/payments", icon: CreditCard },
   { label: "Transactions", description: "History and receipts", href: "/transactions", icon: Receipt },

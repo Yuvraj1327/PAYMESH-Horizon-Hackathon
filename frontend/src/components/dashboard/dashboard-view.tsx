@@ -11,6 +11,7 @@ import { KpiCards } from "@/components/dashboard/kpi-cards";
 import { PaymentOverview } from "@/components/dashboard/payment-overview";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { RecentActivity } from "@/components/dashboard/recent-activity";
+import { Walkthrough } from "@/components/dashboard/walkthrough";
 import { WelcomeSection } from "@/components/dashboard/welcome-section";
 
 export function DashboardView() {
@@ -31,6 +32,7 @@ export function DashboardView() {
           <RecentActivity items={data.activity} />
         </div>
         <div className="flex flex-col gap-6">
+          <Walkthrough data={data} />
           <PaymentOverview payments={data.payments} />
           <QuickActions />
         </div>

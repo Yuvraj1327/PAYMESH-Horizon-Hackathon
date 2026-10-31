@@ -16,6 +16,8 @@ export interface ActivityItem {
   detail: string;
   /** Human-readable relative time (demo only). */
   when: string;
+  /** ISO timestamp, used by the notifications menu. */
+  at?: string;
 }
 
 export interface ActiveRequest {
@@ -54,8 +56,20 @@ export interface QuickAction {
   href: string;
 }
 
+/** Real progress through the core workflow, derived from your own requests and payments (used by the walkthrough). */
+export interface WorkflowProgress {
+  latestRequestId: string | null;
+  hasRequest: boolean;
+  maxQuotes: number;
+  selected: boolean;
+  hasPayment: boolean;
+  authorized: boolean;
+  settled: boolean;
+}
+
 export interface DashboardData {
   source: DataSource;
+  progress: WorkflowProgress;
   user: { name: string; email: string | null };
   kpis: Kpi[];
   activity: ActivityItem[];

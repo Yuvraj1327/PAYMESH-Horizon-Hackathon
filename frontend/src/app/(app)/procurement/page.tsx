@@ -1,18 +1,21 @@
 import type { Metadata } from "next";
-import { ClipboardList } from "lucide-react";
-import { ComingSoonPage } from "@/components/states/coming-soon";
+import Link from "next/link";
+import { Plus } from "lucide-react";
+import { PageHeader } from "@/components/layout/page-header";
+import { ProcurementDashboard } from "@/components/procurement/procurement-dashboard";
+import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = { title: "Procurement" };
 
 export default function ProcurementPage() {
   return (
-    <ComingSoonPage
-      title="Procurement"
-      description="Describe what you need, collect quotations, and pick a provider."
-      icon={ClipboardList}
-      emptyTitle="Procurement workflows arrive in an upcoming step"
-      emptyDescription="Natural-language requests, quotation comparison with AI explanations, and provider selection."
-      planned={["Create a request in plain language with a budget", "Quotations from provider agents", "AI comparison of price, speed and reputation", "Select a provider and hand off to Payment Guardian"]}
-    />
+    <>
+      <PageHeader
+        title="Procurement"
+        description="Create requests, collect quotations from provider agents and choose who to hire."
+        actions={<Button asChild><Link href="/procurement/new"><Plus /> New request</Link></Button>}
+      />
+      <ProcurementDashboard />
+    </>
   );
 }

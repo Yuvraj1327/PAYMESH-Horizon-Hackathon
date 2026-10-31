@@ -5,12 +5,18 @@
  * request carrying credentials. Authentication state, payment data and wallet interactions therefore never touch
  * the Cache Storage. Navigations go to the network; if offline, a static /offline page is shown.
  */
-const VERSION = "v1";
+const VERSION = "v2";
 const STATIC_CACHE = `paymesh-static-${VERSION}`;
 const OFFLINE_URL = "/offline";
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(STATIC_CACHE).then((c) => c.add(OFFLINE_URL)).then(() => self.skipWaiting()));
+  // No automatic skipWaiting: a new version waits until the user chooses "Update" (see SKIP_WAITING below), so an update
+  // can never replace the app in the middle of a payment flow.
+  event.waitUntil(caches.open(STATIC_CACHE).then((c) => c.add(OFFLINE_URL)));
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {

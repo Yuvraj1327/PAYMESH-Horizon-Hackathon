@@ -24,7 +24,7 @@ export function WelcomeSection({ name, source }: { name: string; source: DataSou
           </p>
         </div>
         <Button asChild size="lg" className="w-full bg-teal text-navy hover:bg-[#2dd4bf] sm:w-auto">
-          <Link href="/procurement"><Plus /> Create Procurement Request</Link>
+          <Link href="/procurement/new"><Plus /> Create Procurement Request</Link>
         </Button>
       </div>
     </section>

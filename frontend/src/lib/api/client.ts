@@ -17,6 +17,7 @@ export class ApiError extends Error {
     readonly status: number,
     readonly code: string,
     readonly requestId?: string,
+    readonly details?: unknown,
   ) {
     super(message);
     this.name = "ApiError";
@@ -26,9 +27,23 @@ export class ApiError extends Error {
 type TokenProvider = () => Promise<string | null> | string | null;
 let tokenProvider: TokenProvider = () => null;
 
-/** The auth layer (Supabase) registers itself here later; the client never stores or logs tokens. */
+/** The auth layer (Supabase) registers itself here; the client never stores or logs tokens. */
 export function registerAccessTokenProvider(provider: TokenProvider): void {
   tokenProvider = provider;
+}
+
+/**
+ * Called once when a request is answered 401. Resolves true if the session was refreshed (the request is then
+ * retried exactly once); false if the user must sign in again.
+ */
+type UnauthorizedHandler = () => Promise<boolean>;
+let unauthorizedHandler: UnauthorizedHandler = async () => false;
+export function registerUnauthorizedHandler(h: UnauthorizedHandler): void {
+  unauthorizedHandler = h;
+}
+let sessionExpiredHandler: () => void = () => {};
+export function registerSessionExpiredHandler(h: () => void): void {
+  sessionExpiredHandler = h;
 }
 
 export interface ApiRequestOptions<T> {
@@ -40,10 +55,9 @@ export interface ApiRequestOptions<T> {
   signal?: AbortSignal;
 }
 
-export async function apiRequest<T>(path: string, opts: ApiRequestOptions<T>): Promise<T> {
-  if (!env.apiBaseUrl) throw new ApiError("Backend is not configured (NEXT_PUBLIC_API_BASE_URL).", 0, "api_not_configured");
+async function send(path: string, opts: { method?: string; body?: unknown; headers?: Record<string, string>; signal?: AbortSignal }): Promise<Response> {
   const token = await tokenProvider();
-  const res = await fetch(`${env.apiBaseUrl.replace(/\/$/, "")}${path}`, {
+  return fetch(`${env.apiBaseUrl.replace(/\/$/, "")}${path}`, {
     method: opts.method ?? "GET",
     headers: {
       Accept: "application/json",
@@ -56,10 +70,24 @@ export async function apiRequest<T>(path: string, opts: ApiRequestOptions<T>): P
     cache: "no-store", // never let the HTTP cache keep authenticated or payment responses
     signal: opts.signal,
   });
+}
+
+export async function apiRequest<T>(path: string, opts: ApiRequestOptions<T>): Promise<T> {
+  if (!env.apiBaseUrl) throw new ApiError("Backend is not configured (NEXT_PUBLIC_API_BASE_URL).", 0, "api_not_configured");
+  let res = await send(path, opts);
+  if (res.status === 401) {
+    // The backend rejected the token (expired/invalid). Refresh once and retry once; a 401 means the request was
+    // refused before any processing, so retrying cannot double-apply a payment action.
+    const refreshed = await unauthorizedHandler().catch(() => false);
+    if (refreshed) res = await send(path, opts);
+    if (res.status === 401) {
+      sessionExpiredHandler();
+    }
+  }
   const json: unknown = await res.json().catch(() => null);
   if (!res.ok) {
     const e = errorEnvelope.safeParse(json);
-    if (e.success) throw new ApiError(e.data.error.message, res.status, e.data.error.code, e.data.error.request_id);
+    if (e.success) throw new ApiError(e.data.error.message, res.status, e.data.error.code, e.data.error.request_id, e.data.error.details);
     throw new ApiError(`Request failed (${res.status})`, res.status, "http_error");
   }
   return opts.schema.parse(json);
