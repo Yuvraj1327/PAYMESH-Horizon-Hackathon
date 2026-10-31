@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+/* ───────────── PayMesh design tokens ───────────── */
+@theme {
+  --color-navy: #142b4a;
+  --color-navy-800: #1b3a63;
+  --color-navy-50: #eef2f8;
+  --color-brand: #2563eb;
+  --color-brand-600: #1d4ed8;
+  --color-brand-50: #eff4ff;
+  --color-teal: #14b8a6;
+  --color-teal-700: #0f766e;
+  --color-teal-50: #effdfa;
+
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-foreground: #172033;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
+  --color-border: #e2e8f0;
+  --color-ring: #2563eb;
+
+  --color-success: #0f766e;
+  --color-success-bg: #ccfbf1;
+  --color-warning: #92400e;
+  --color-warning-bg: #fef3c7;
+  --color-danger: #b91c1c;
+  --color-danger-bg: #fee2e2;
+  --color-info: #1d4ed8;
+  --color-info-bg: #dbeafe;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  --shadow-card: 0 1px 2px rgb(20 43 74 / 0.04), 0 1px 3px rgb(20 43 74 / 0.06);
+  --shadow-pop: 0 8px 24px rgb(20 43 74 / 0.12);
+}
+
+@layer base {
+  html { color-scheme: light; -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  * { border-color: var(--color-border); }
+  :focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; }
+  ::selection { background: #bfdbfe; }
+}
+
+/* Respect reduced-motion preferences everywhere. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+@keyframes pm-pulse { 0%, 100% { opacity: 1 } 50% { opacity: .5 } }
+.pm-skeleton { animation: pm-pulse 1.6s ease-in-out infinite; }

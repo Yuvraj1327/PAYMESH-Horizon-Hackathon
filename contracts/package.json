@@ -1,0 +1,24 @@
+{
+  "name": "paymesh-contracts",
+  "version": "1.0.0",
+  "description": "PayMesh AgentRegistry contract (HashKey Chain)",
+  "main": "index.js",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:testnet": "hardhat run scripts/deploy.js --network hskTestnet",
+    "deploy:mainnet": "hardhat run scripts/deploy.js --network hskMainnet",
+    "preflight:testnet": "hardhat run scripts/preflight.js --network hskTestnet",
+    "preflight:mainnet": "hardhat run scripts/preflight.js --network hskMainnet"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "dotenv": "^18.0.9",
+    "hardhat": "^2.29.1",
+    "solc": "^0.8.24"
+  },
+  "private": true
+}
